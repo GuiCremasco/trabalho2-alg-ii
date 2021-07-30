@@ -11,7 +11,3 @@
 [![Codacy Security Scan](https://github.com/LeonardoTPereira/Graphs/actions/workflows/codacy-analysis.yml/badge.svg)](https://github.com/LeonardoTPereira/Graphs/actions/workflows/codacy-analysis.yml)
 [![Java CI with Maven](https://github.com/LeonardoTPereira/Graphs/actions/workflows/maven.yml/badge.svg)](https://github.com/LeonardoTPereira/Graphs/actions/workflows/maven.yml)
 [![SonarCloud](https://github.com/LeonardoTPereira/Graphs/actions/workflows/build.yml/badge.svg)](https://github.com/LeonardoTPereira/Graphs/actions/workflows/build.yml)
-
-Graph examples from Algorithm and Data Structures 2 Classes
-
----- Código-base do professor Leonardo Tortoro Pereira, com adaptações feitas por Guilherme Cremasco Gulmini (nºUSP = 11816077) como parte do Exercício 6. ----
