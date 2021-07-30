@@ -1,39 +1,33 @@
 package graph;
 
-import javax.annotation.Nullable;
+// import javax.annotation.Nullable;
 
-public class DepthFirstTraversal extends TraversalStrategyInterface
-{
+public class DepthFirstTraversal extends TraversalStrategyInterface {
     StringBuilder traversedPath;
 
-    public DepthFirstTraversal(AbstractGraph g)
-    {
+    public DepthFirstTraversal(AbstractGraph g) {
         super(g);
         traversedPath = new StringBuilder();
     }
 
     @Override
-    public void traverseGraph(Vertex source, @Nullable Vertex destination)
-    {
+    public void traverseGraph(Vertex source, Vertex destination) {
         depthFirstTraversalRecursion(source);
         printPath();
     }
 
-    private void depthFirstTraversalRecursion(Vertex source)
-    {
+    private void depthFirstTraversalRecursion(Vertex source) {
         markVertexAsVisited(getGraph().getVertices().indexOf(source));
         traversedPath.append(source).append('\n');
         addToPath(source);
         Vertex currentVisitedVertex = source;
         int currentVistedVertexIndex;
         Vertex adjacentVertex = getGraph().getFirstConnectedVertex(source);
-        while(adjacentVertex != null)
-        {
+        while (adjacentVertex != null) {
             currentVistedVertexIndex = getGraph().getVertices().indexOf(currentVisitedVertex);
             int adjacentVertexIndex = getGraph().getVertices().indexOf(adjacentVertex);
 
-            if(!hasVertexBeenVisited(adjacentVertexIndex))
-            {
+            if (!hasVertexBeenVisited(adjacentVertexIndex)) {
                 depthFirstTraversalRecursion(adjacentVertex);
                 setPredecessorVertexIndex(adjacentVertexIndex, currentVistedVertexIndex);
             }

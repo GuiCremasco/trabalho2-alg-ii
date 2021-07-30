@@ -1,23 +1,21 @@
 package graph;
 
-import javax.annotation.Nullable;
+// import javax.annotation.Nullable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public final class DijkstraTraversal extends TraversalStrategyInterface
-{
+public final class DijkstraTraversal extends TraversalStrategyInterface {
 
     private Queue<Vertex> verticesToVisit;
-    public DijkstraTraversal(AbstractGraph graph)
-    {
+
+    public DijkstraTraversal(AbstractGraph graph) {
         super(graph);
         verticesToVisit = new LinkedList<>();
     }
 
     @Override
-    public void traverseGraph(Vertex source, @Nullable Vertex destination)
-    {
+    public void traverseGraph(Vertex source, Vertex destination) {
         int sourceIndex = getGraph().getVertices().indexOf(source);
         markVertexAsVisited(sourceIndex);
         setDistanceToVertex(sourceIndex, 0);
@@ -28,19 +26,15 @@ public final class DijkstraTraversal extends TraversalStrategyInterface
 
         Vertex currentVisitedVertex = source;
         int currentVisitedVertexIndex = getGraph().getVertices().indexOf(currentVisitedVertex);
-        while(visitedVertices.size() != getGraph().getVertices().size())
-        {
-            if (currentVisitedVertex != null)
-            {
+        while (visitedVertices.size() != getGraph().getVertices().size()) {
+            if (currentVisitedVertex != null) {
                 Vertex adjacentVertex = getGraph().getFirstConnectedVertex(currentVisitedVertex);
-                while (adjacentVertex != null)
-                {
+                while (adjacentVertex != null) {
                     int adjacentVertexIndex = getGraph().getVertices().indexOf(adjacentVertex);
-                    if (!visitedVertices.contains(adjacentVertex))
-                    {
-                        float newDistance = getGraph().getDistance(currentVisitedVertex, adjacentVertex) + getDistanceToVertex(currentVisitedVertexIndex);
-                        if(newDistance < getDistanceToVertex(adjacentVertexIndex))
-                        {
+                    if (!visitedVertices.contains(adjacentVertex)) {
+                        float newDistance = getGraph().getDistance(currentVisitedVertex, adjacentVertex)
+                                + getDistanceToVertex(currentVisitedVertexIndex);
+                        if (newDistance < getDistanceToVertex(adjacentVertexIndex)) {
                             setDistanceToVertex(adjacentVertexIndex, newDistance);
                         }
                         verticesToVisit.add(adjacentVertex);
@@ -55,24 +49,20 @@ public final class DijkstraTraversal extends TraversalStrategyInterface
         printDistances();
     }
 
-    private Vertex getLowestDistance()
-    {
+    private Vertex getLowestDistance() {
         Vertex closestVertex = verticesToVisit.poll();
         float lowestDistance = getDistanceToVertex(getGraph().getVertices().indexOf(closestVertex));
         Vertex currentVertex;
-        do
-        {
+        do {
             currentVertex = verticesToVisit.poll();
-            if(currentVertex != null)
-            {
+            if (currentVertex != null) {
                 float newDistace = getDistanceToVertex(getGraph().getVertices().indexOf(currentVertex));
-                if(newDistace < lowestDistance)
-                {
+                if (newDistace < lowestDistance) {
                     lowestDistance = newDistace;
                     closestVertex = currentVertex;
                 }
             }
-        } while(currentVertex != null);
+        } while (currentVertex != null);
         return closestVertex;
     }
 }

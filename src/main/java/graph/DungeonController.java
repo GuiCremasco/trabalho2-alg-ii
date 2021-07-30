@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
-public class DungeonController
-{
+public class DungeonController {
     private static final Logger LOGGER = Logger.getLogger("DungeonController.class");
 
     private AbstractGraph dungeon;
@@ -15,46 +14,43 @@ public class DungeonController
     private Room entrance;
     private Room exit;
 
-    private DungeonController()
-    {
+    private DungeonController() {
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         DungeonController dungeonController = new DungeonController();
         createRandomDungeon(dungeonController);
         DelaunayTriangulation.triangulateGraphVertices(dungeonController.dungeon);
-        //CreateDungeonGraphic(dungeonController);
+        // CreateDungeonGraphic(dungeonController);
         ReplaceDungeonWithMST(dungeonController);
-        //CreateDungeonGraphic(dungeonController);
-        printDungeon(dungeonController);
+        // CreateDungeonGraphic(dungeonController);
+        // printDungeon(dungeonController);
         setSpecialRooms(dungeonController);
-        CreateDungeonGraphic(dungeonController);
+        // CreateDungeonGraphic(dungeonController);
 
-        // Na instrução abaixo, alterar o método de travessia da dungeon para cada teste no segundo argumento
+        // Na instrução abaixo, alterar o método de travessia da dungeon para cada teste
+        // no segundo argumento
         // da função "getPathFromEntranceToExit".
-            // Método 1: DepthFirstTraversal
-            // Método 2: BreadthFirstTraversal
-            // Método 3: AStartPathFind
+        // Método 1: DepthFirstTraversal
+        // Método 2: BreadthFirstTraversal
+        // Método 3: AStartPathFind
 
-        List<Vertex> traversalPath = getPathFromEntranceToExit(dungeonController, new AStartPathFind(dungeonController.dungeon));
-        CreateDungeonGraphic(dungeonController, traversalPath);
+        List<Vertex> traversalPath = getPathFromEntranceToExit(dungeonController,
+                new BreadthFirstTraversal(dungeonController.dungeon));
         setLocksAndKeys(dungeonController);
-        //CreateDungeonGraphic(dungeonController, traversalPath);
+        CreateDungeonGraphic(dungeonController, traversalPath);
+        // CreateDungeonGraphic(dungeonController, traversalPath);
     }
 
-    private static void CreateDungeonGraphic(DungeonController dungeonController)
-    {
+    private static void CreateDungeonGraphic(DungeonController dungeonController) {
         SwingUtilities.invokeLater(() -> new DungeonGraphic(dungeonController.dungeon, null).setVisible(true));
     }
 
-    private static void CreateDungeonGraphic(DungeonController dungeonController, List<Vertex> traversalPath)
-    {
+    private static void CreateDungeonGraphic(DungeonController dungeonController, List<Vertex> traversalPath) {
         SwingUtilities.invokeLater(() -> new DungeonGraphic(dungeonController.dungeon, traversalPath).setVisible(true));
     }
 
-    private static void createRandomDungeon(DungeonController dungeonController)
-    {
+    private static void createRandomDungeon(DungeonController dungeonController) {
         System.out.println("What will be the random seed?");
         Scanner scanner = new Scanner(System.in);
         int seed = Integer.parseInt(scanner.nextLine());
@@ -65,42 +61,43 @@ public class DungeonController
         dungeonController.dungeon = randomDungeonGenerator.getDungeon();
     }
 
-    private static void ReplaceDungeonWithMST(DungeonController dungeonController)
-    {
+    private static void ReplaceDungeonWithMST(DungeonController dungeonController) {
         AbstractGraph dungeon = dungeonController.dungeon;
         TraversalStrategyInterface traversalStrategy;
         traversalStrategy = new PrimMSTTraversal(dungeon);
         traversalStrategy.traverseGraph(dungeon.getVertices().get(0), null);
-        dungeonController.dungeon = GraphConverter.predecessorListToGraph(dungeon, traversalStrategy.getPredecessorArray());
+        dungeonController.dungeon = GraphConverter.predecessorListToGraph(dungeon,
+                traversalStrategy.getPredecessorArray());
     }
 
-    private static void setSpecialRooms(DungeonController dungeonController)
-    {
+    private static void setSpecialRooms(DungeonController dungeonController) {
         AbstractGraph dungeon = dungeonController.dungeon;
         TraversalStrategyInterface traversalStrategy = new FloydWarshallTraversal(dungeon);
         traversalStrategy.traverseGraph(dungeon.getVertices().get(0), null);
-        Room center = (Room) dungeon.getCentermostVertex(((FloydWarshallTraversal)traversalStrategy).getDistanceMatrix());
+        Room center = (Room) dungeon
+                .getCentermostVertex(((FloydWarshallTraversal) traversalStrategy).getDistanceMatrix());
         center.setCheckpoint(true);
-        Room entrance = (Room) dungeon.getOuterMostVertex(((FloydWarshallTraversal)traversalStrategy).getDistanceMatrix());
+        Room entrance = (Room) dungeon
+                .getOuterMostVertex(((FloydWarshallTraversal) traversalStrategy).getDistanceMatrix());
         entrance.setEntrance(true);
         dungeonController.entrance = entrance;
-        Room exit = (Room) dungeon.getMostDistantVertex(((FloydWarshallTraversal)traversalStrategy).getDistanceMatrix(), entrance);
+        Room exit = (Room) dungeon
+                .getMostDistantVertex(((FloydWarshallTraversal) traversalStrategy).getDistanceMatrix(), entrance);
         exit.setExit(true);
         dungeonController.exit = exit;
     }
 
     /*
-    private static List<Vertex> getPathFromEntranceToExit(DungeonController dungeonController)
-    {
-        AbstractGraph dungeon = dungeonController.dungeon;
-        TraversalStrategyInterface aStar = new AStartPathFind(dungeon);
-        aStar.traverseGraph(dungeonController.entrance, dungeonController.exit);
-        return aStar.getShortestPath(dungeonController.entrance, dungeonController.exit);
-    }
+     * private static List<Vertex> getPathFromEntranceToExit(DungeonController
+     * dungeonController) { AbstractGraph dungeon = dungeonController.dungeon;
+     * TraversalStrategyInterface aStar = new AStartPathFind(dungeon);
+     * aStar.traverseGraph(dungeonController.entrance, dungeonController.exit);
+     * return aStar.getShortestPath(dungeonController.entrance,
+     * dungeonController.exit); }
      */
 
-    private static List<Vertex> getPathFromEntranceToExit(DungeonController dungeonController, TraversalStrategyInterface traversalStrategyInterface)
-    {
+    private static List<Vertex> getPathFromEntranceToExit(DungeonController dungeonController,
+            TraversalStrategyInterface traversalStrategyInterface) {
         AbstractGraph dungeon = dungeonController.dungeon;
         TraversalStrategyInterface traversalStrategy = traversalStrategyInterface;
         traversalStrategy.traverseGraph(dungeonController.entrance, dungeonController.exit);
@@ -114,8 +111,7 @@ public class DungeonController
         traversalStrategy.traverseGraph(dungeonController.entrance, null);
     }
 
-    private static void printDungeon(DungeonController dungeonController)
-    {
+    private static void printDungeon(DungeonController dungeonController) {
         AbstractGraph dungeon = dungeonController.dungeon;
         TraversalStrategyInterface traversalStrategy;
         traversalStrategy = new BreadthFirstTraversal(dungeon);
